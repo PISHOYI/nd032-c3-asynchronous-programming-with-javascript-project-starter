@@ -83,7 +83,7 @@ async function handleCreateRace() {
 			title: "Error",
 			text: "You Must Select A Player ID"
 		});
-	}else if (store.track_id === undefined) {
+	} else if (store.track_id === undefined) {
 		Swal.fire({
 			icon: "error",
 			title: "Error",
@@ -116,23 +116,41 @@ async function handleCreateRace() {
 }
 
 function runRace(raceID) {
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
 		// TODO - use Javascript's built in setInterval method to get race info every 500ms
-
 		/* 
-			TODO - if the race info status property is "in-progress", update the leaderboard by calling:
-	
-			renderAt('#leaderBoard', raceProgress(res.positions))
+		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+		
+		renderAt('#leaderBoard', raceProgress(res.positions))
 		*/
+		const raceInterval = setInterval(() => {
+			raceInfo(raceID)
+				.then(res => {
+					if (res.status === 'in-progress') {
+						renderAt('#leaderBoard', raceProgress(res.positions));
+					}
+					/* 
+	TODO - if the race info status property is "finished", run the following:
+	
+	clearInterval(raceInterval) // to stop the interval from repeating
+	renderAt('#race', resultsView(res.positions)) // to render the results view
+	reslove(res) // resolve the promise
+*/
+					else if (res.status === 'finished') {
+						clearInterval(raceInterval);
+						renderAt('#race', resultsView(res.positions));
+						resolve(res);
+					}
+				}).catch(error => {
+					clearInterval(raceInterval);
+					reject(error);
+				});
+		}, 500);
+		function getRaceInfo(raceID) {
+		}
 
-		/* 
-			TODO - if the race info status property is "finished", run the following:
-	
-			clearInterval(raceInterval) // to stop the interval from repeating
-			renderAt('#race', resultsView(res.positions)) // to render the results view
-			reslove(res) // resolve the promise
-		*/
-	})
+	});
+
 	// remember to add error handling for the Promise
 }
 
@@ -143,13 +161,20 @@ async function runCountdown() {
 		let timer = 3
 
 		return new Promise(resolve => {
+			document.getElementById('big-numbers').innerHTML = timer;
 			// TODO - use Javascript's built in setInterval method to count down once per second
+			const countdownInterval = setInterval(() => {
 
-			// run this DOM manipulation to decrement the countdown for the user
-			document.getElementById('big-numbers').innerHTML = --timer
+				// run this DOM manipulation to decrement the countdown for the user
+				document.getElementById('big-numbers').innerHTML = --timer
 
-			// TODO - if the countdown is done, clear the interval, resolve the promise, and return
-
+				// TODO - if the countdown is done, clear the interval, resolve the promise, and return
+				clearInterval(countdownInterval);
+				if (timer === 0) {
+					clearInterval(countdownInterval);
+					resolve('Time Ended');
+				}
+			}, 1000);
 		})
 	} catch (error) {
 		console.log(error);
@@ -169,6 +194,10 @@ function handleSelectPodRacer(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected racer to the store
+	if (!selected === undefined) {
+		store.set('selected_racer', target.id);
+	}
+
 }
 
 function handleSelectTrack(target) {
@@ -184,7 +213,10 @@ function handleSelectTrack(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected track id to the store
+	if (!selected === undefined) {
 
+		store.set('selected_track', target.id);
+	}
 }
 
 function handleAccelerate() {
