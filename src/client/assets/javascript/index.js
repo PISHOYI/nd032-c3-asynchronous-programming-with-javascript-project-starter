@@ -363,7 +363,7 @@ function renderAt(element, html) {
 
 // API CALLS ------------------------------------------------
 
-const SERVER = 'http://localhost:3001'
+const SERVER = 'http://localhost:3000'
 
 function defaultFetchOpts() {
 	return {
@@ -376,13 +376,35 @@ function defaultFetchOpts() {
 }
 
 // TODO - Make a fetch call (with error handling!) to each of the following API endpoints 
-
 function getTracks() {
 	// GET request to `${SERVER}/api/tracks`
+	return fetch(`${SERVER}/api/tracks`, {
+		method: 'GET',
+		...defaultFetchOpts(),
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`Error: ${response.status}`);
+			}
+			return response.json();
+		})
+		.catch(err => Swal.fire({icon: "error",title: "Error",text: err}))
 }
+
 
 function getRacers() {
 	// GET request to `${SERVER}/api/cars`
+	return fetch(`${SERVER}/api/cars`, {
+		method: 'GET',
+		...defaultFetchOpts(),
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`Error: ${response.status}`);
+			}
+			return response.json();
+		})
+		.catch(err => Swal.fire({icon: "error",title: "Error",text: err}))
 }
 
 function createRace(player_id, track_id) {
