@@ -214,7 +214,6 @@ function handleSelectTrack(target) {
 
 	// TODO - save the selected track id to the store
 	if (!selected === undefined) {
-
 		store.set('selected_track', target.id);
 	}
 }
@@ -222,6 +221,9 @@ function handleSelectTrack(target) {
 function handleAccelerate() {
 	console.log("accelerate button clicked")
 	// TODO - Invoke the API call to accelerate
+	accelerate(raceId)
+    .then(() => console.log(`Race ${raceId} accelerated`))
+    .catch(err => Swal.fire({icon: "error",title: "Error",text: err}));
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -368,7 +370,7 @@ function defaultFetchOpts() {
 		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin': SERVER,
+			'Access-Control-Allow-Origin' : SERVER,
 		},
 	}
 }
@@ -387,15 +389,15 @@ function createRace(player_id, track_id) {
 	player_id = parseInt(player_id)
 	track_id = parseInt(track_id)
 	const body = { player_id, track_id }
-
+	
 	return fetch(`${SERVER}/api/races`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 		dataType: 'jsonp',
 		body: JSON.stringify(body)
 	})
-		.then(res => res.json())
-		.catch(err => console.log("Problem with createRace request::", err))
+	.then(res => res.json())
+	.catch(err => console.log("Problem with createRace request::", err))
 }
 
 function getRace(id) {
@@ -407,8 +409,8 @@ function startRace(id) {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-		.then(res => res.json())
-		.catch(err => console.log("Problem with getRace request::", err))
+	.then(res => res.json())
+	.catch(err => console.log("Problem with getRace request::", err))
 }
 
 function accelerate(id) {
