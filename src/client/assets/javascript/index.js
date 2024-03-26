@@ -73,29 +73,31 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
+	const player_id = store.player_id;
+	const track_id = store.track_id;
 	// render starting UI
-	renderAt('#race', renderRaceStartView())
+	renderAt('#race', renderRaceStartView(track_id,player_id))
 
 	// TODO - Get player_id and track_id from the store
-	if (store.player_id === undefined) {
-		Swal.fire({
-			icon: "error",
-			title: "Error",
-			text: "You Must Select A Player ID"
-		});
-	} else if (store.track_id === undefined) {
-		Swal.fire({
-			icon: "error",
-			title: "Error",
-			text: "You Must Select A Track ID"
-		});
-	}
+	// if (store.player_id == undefined) {
+	// 	Swal.fire({
+	// 		icon: "error",
+	// 		title: "Error",
+	// 		text: "You Must Select A Player ID"
+	// 	});
+	// } else if (store.track_id == undefined) {
+	// 	Swal.fire({
+	// 		icon: "error",
+	// 		title: "Error",
+	// 		text: "You Must Select A Track ID"
+	// 	});
+	// }
 
 	// const race = TODO - invoke the API call to create the race, then save the result
 	const race = await createRace(store.player_id, store.track_id);
 
 	// TODO - update the store with the race id
-	store.set('race_id', race.ID);
+	store.race_id = race
 	try {
 		// For the API to work properly, the race id should be race id - 1
 		// The race has been created, now start the countdown
@@ -146,11 +148,7 @@ function runRace(raceID) {
 					reject(error);
 				});
 		}, 500);
-		function getRaceInfo(raceID) {
-		}
-
 	});
-
 	// remember to add error handling for the Promise
 }
 
@@ -194,8 +192,8 @@ function handleSelectPodRacer(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected racer to the store
-	if (!selected === undefined) {
-		store.set('selected_racer', target.id);
+	if (selected !== undefined) {
+		store.selected_racer = target.id;
 	}
 
 }
@@ -213,17 +211,22 @@ function handleSelectTrack(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected track id to the store
-	if (!selected === undefined) {
-		store.set('selected_track', target.id);
+	if (selected !== undefined) {
+		store.selected_track = target.id;
 	}
 }
 
 function handleAccelerate() {
 	console.log("accelerate button clicked")
 	// TODO - Invoke the API call to accelerate
+	const raceId = store.race_id;
+	if (!raceId) {
+		Swal.fire({ icon: "error", title: "Error", text: "No Race ID" });
+		return;
+	}
 	accelerate(raceId)
-    .then(() => console.log(`Race ${raceId} accelerated`))
-    .catch(err => Swal.fire({icon: "error",title: "Error",text: err}));
+		.then(() => console.log(`Race ${raceId} accelerated`))
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -294,7 +297,7 @@ function renderCountdown(count) {
 function renderRaceStartView(track, racers) {
 	return `
 		<header>
-			<h1>Race: ${track.name}</h1>
+			<h1>Race: ${track}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
@@ -307,7 +310,9 @@ function renderRaceStartView(track, racers) {
 				<button id="gas-peddle">Click Me To Win!</button>
 			</section>
 		</main>
-		<footer></footer>
+		<footer>
+        EDITED BY PISHOY ZARIF &copy; 2024
+    </footer>
 	`
 }
 
@@ -327,6 +332,7 @@ function resultsView(positions) {
 
 function raceProgress(positions) {
 	let userPlayer = positions.find(e => e.id === store.player_id)
+
 	userPlayer.driver_name += " (you)"
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1)
@@ -363,14 +369,14 @@ function renderAt(element, html) {
 
 // API CALLS ------------------------------------------------
 
-const SERVER = 'http://localhost:3000'
+const SERVER = 'http://localhost:3001'
 
 function defaultFetchOpts() {
 	return {
 		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin' : SERVER,
+			'Access-Control-Allow-Origin': SERVER,
 		},
 	}
 }
@@ -388,7 +394,7 @@ function getTracks() {
 			}
 			return response.json();
 		})
-		.catch(err => Swal.fire({icon: "error",title: "Error",text: err}))
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
 
@@ -404,26 +410,37 @@ function getRacers() {
 			}
 			return response.json();
 		})
-		.catch(err => Swal.fire({icon: "error",title: "Error",text: err}))
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
 function createRace(player_id, track_id) {
 	player_id = parseInt(player_id)
 	track_id = parseInt(track_id)
 	const body = { player_id, track_id }
-	
+
 	return fetch(`${SERVER}/api/races`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 		dataType: 'jsonp',
 		body: JSON.stringify(body)
 	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with createRace request::", err))
+		.then(res => res.json())
+		.catch(err => console.log("Problem with createRace request::", err))
 }
 
 function getRace(id) {
 	// GET request to `${SERVER}/api/races/${id}`
+	return fetch(`${SERVER}/api/races/${id}`, {
+		method: 'GET',
+		...defaultFetchOpts(),
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`Error: ${response.status}`);
+			}
+			return response.json();
+		})
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
 function startRace(id) {
@@ -431,12 +448,23 @@ function startRace(id) {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with getRace request::", err))
+		.then(res => res.json())
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
 }
 
 function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
+	return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+		method: 'POST',
+		...defaultFetchOpts(),
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`Error: ${response.status}`);
+			}
+			return response.json();
+		})
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
 }

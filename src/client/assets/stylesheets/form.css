@@ -1,6 +1,8 @@
 form ul {
     display: flex;
     padding: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 form li {
@@ -13,6 +15,7 @@ form li {
     border: 1px solid #fbf5f5;
     cursor: pointer;
     transition: all .6s;
+    margin-left: 25px;
 }
 
 form li:hover {
