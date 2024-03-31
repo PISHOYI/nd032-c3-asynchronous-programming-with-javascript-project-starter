@@ -85,7 +85,6 @@ async function handleCreateRace() {
 		// const race = TODO - invoke the API call to create the race, then save the result
 		const race = await createRace(player_id, track_id);
 		// render starting UI
-		let track = { name: "RACE" };
 		renderAt('#race', renderRaceStartView(race.Track));
 		// TODO - update the store with the race id
 		// For the API to work properly, the race id should be race id - 1
