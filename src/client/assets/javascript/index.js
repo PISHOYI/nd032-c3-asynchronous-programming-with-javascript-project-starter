@@ -258,6 +258,7 @@ function renderTrackCard(track) {
 	return `
 		<li id="${id}" class="card track">
 			<h3>${name}</h3>
+			<img class="track_img" width="250px" height="250px" src="assets/imgs/${name}.jpg">
 		</li>
 	`
 }

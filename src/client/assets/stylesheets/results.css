@@ -20,7 +20,9 @@
 * {
     text-align: center;
 }
-
+.track_img{
+    border-radius: 10px;
+}
 .button_re{
     font-size: 22px;
     font-family: tahoma;
