@@ -1,0 +1,82 @@
+commit 187ea46388d6eb6e379581612a439279a8da6a1e (HEAD -> master, origin/master, origin/HEAD)
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Sun Mar 31 20:32:39 2024 +0200
+
+    Update Code
+
+commit 207e8201e9c87e397b9e5747ced381a89d8d9ea9
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Tue Mar 26 20:19:59 2024 +0200
+
+    Update Code
+    Api Calls
+
+commit 395ed775e4381fd31adfcb5793bb98be8f929d02
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Tue Mar 26 17:01:25 2024 +0200
+
+     Change API server URL from 'http://localhost:3001' to 'http://localhost:3000'
+    
+    Update the getTracks() and getRacers() functions to use the fetch API with error handling.
+
+commit 9c55df5ca377109aeba2335a16bacb5ee52ea38c
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Tue Mar 26 16:56:26 2024 +0200
+
+     Update client-side JavaScript code:
+
+    1. Add accelerate() function implementation in index.js
+    2. Include index.js in home.html, progress.html, and results.html
+    3. Add error handling for accelerate() function
+    4. Add missing semicolon in index.js
+
+    No changes in data.json or server-side code.
+
+commit 1a6347c48a750bcf01b1fc08b5674bde3f5910e1
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Tue Mar 26 01:20:42 2024 +0200
+
+     Update index.js and add sweetalert2 library to all pages
+
+    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions     
+    * Added sweetalert2 library to all pages for better user notifications and alerts
+    * Updated HTML files to include reference to sweetalert2 library and index.js
+
+commit d7254f8de0d4149c7ff0c68ed808ceacb83723eb
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Mon Mar 25 22:35:20 2024 +0200
+
+     Update home.html with footer containing editor's name and copyright
+
+    This commit updates the home.html file by adding a footer that contains the name of the editor and a copyright symbol.
+
+commit 1254eedaa1896b760408e85433f0caa2e3de9dd0
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Mon Mar 25 22:34:04 2024 +0200
+
+     Updated package.json, index.js, and various CSS files for Pod Racer Simulator
+
+    The package.json file was updated to include the "sweetalert2" package. The index.js file was updated to include error handling for crea
+Date:   Tue Mar 26 01:20:42 2024 +0200
+
+     Update index.js and add sweetalert2 library to all pages
+
+    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions     
+    * Added sweetalert2 library to all pages for better user notifications and alerts
+    * Updated HTML files to include reference to sweetalert2 library and index.js
+
+commit d7254f8de0d4149c7ff0c68ed808ceacb83723eb
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Mon Mar 25 22:35:20 2024 +0200
+
+     Update home.html with footer containing editor's name and copyright
+
+    This commit updates the home.html file by adding a footer that contains the name of the editor and a copyright symbol.
+
+commit 1254eedaa1896b760408e85433f0caa2e3de9dd0
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Mon Mar 25 22:34:04 2024 +0200
+
+     Updated package.json, index.js, and various CSS files for Pod Racer Simulator
+
+    The package.json file was updated to include the "sweetalert2" package. The index.js file was updated to include error handling for creating and starting races, as well as updating the store with the race ID. Various CSS files were updated to change background images and add styling for the footer.
