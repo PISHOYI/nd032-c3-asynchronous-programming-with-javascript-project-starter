@@ -4,6 +4,7 @@ let store = {
 	track_id: undefined,
 	player_id: undefined,
 	race_id: undefined,
+	gameStart: false,
 }
 
 // We need our javascript to wait until the DOM is loaded
@@ -73,80 +74,73 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	const player_id = store.player_id;
-	const track_id = store.track_id;
-	// render starting UI
-	renderAt('#race', renderRaceStartView(track_id,player_id))
-
-	// TODO - Get player_id and track_id from the store
-	// if (store.player_id == undefined) {
-	// 	Swal.fire({
-	// 		icon: "error",
-	// 		title: "Error",
-	// 		text: "You Must Select A Player ID"
-	// 	});
-	// } else if (store.track_id == undefined) {
-	// 	Swal.fire({
-	// 		icon: "error",
-	// 		title: "Error",
-	// 		text: "You Must Select A Track ID"
-	// 	});
-	// }
-
-	// const race = TODO - invoke the API call to create the race, then save the result
-	const race = await createRace(store.player_id, store.track_id);
-
-	// TODO - update the store with the race id
-	store.race_id = race
 	try {
+		// TODO - Get player_id and track_id from the store
+		const player_id = store.player_id;
+		const track_id = store.track_id;
+		if (store.track_id == undefined) {
+			Swal.fire({ icon: "error", title: "Error", text: "Select A Track ID" });
+			return;
+		}
+		// const race = TODO - invoke the API call to create the race, then save the result
+		const race = await createRace(player_id, track_id);
+		// render starting UI
+		let track = { name: "RACE" };
+		renderAt('#race', renderRaceStartView(race.Track));
+		// TODO - update the store with the race id
 		// For the API to work properly, the race id should be race id - 1
+		store.race_id = parseInt(race.ID - 1);
 		// The race has been created, now start the countdown
 		// TODO - call the async function runCountdown
 		await runCountdown();
 		// TODO - call the async function startRace
-		await startRace(store.race_id - 1);
+		await startRace(store.race_id);
 		// TODO - call the async function runRace
-		await runRace(store.race_id - 1);
-	} catch {
+		await runRace(store.race_id);
+	} catch (err) {
 		Swal.fire({
 			icon: "error",
 			title: "Error",
-			text: "Something Went Wrong"
+			text: err
 		});
 	}
 
 }
 
-function runRace(raceID) {
+
+async function runRace(raceID) {
+	store.gameStart = true;
+
 	return new Promise((resolve, reject) => {
 		// TODO - use Javascript's built in setInterval method to get race info every 500ms
-		/* 
-		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
-		
-		renderAt('#leaderBoard', raceProgress(res.positions))
-		*/
+
 		const raceInterval = setInterval(() => {
-			raceInfo(raceID)
+
+			/* 
+	TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+	
+	renderAt('#leaderBoard', raceProgress(res.positions))
+	*/
+			fetch(`${SERVER}/api/races/${raceID}`)
+				.then(res => res.json())
 				.then(res => {
-					if (res.status === 'in-progress') {
+					if (res.status == 'in-progress') {
 						renderAt('#leaderBoard', raceProgress(res.positions));
 					}
 					/* 
-	TODO - if the race info status property is "finished", run the following:
-	
-	clearInterval(raceInterval) // to stop the interval from repeating
-	renderAt('#race', resultsView(res.positions)) // to render the results view
-	reslove(res) // resolve the promise
-*/
-					else if (res.status === 'finished') {
-						clearInterval(raceInterval);
-						renderAt('#race', resultsView(res.positions));
-						resolve(res);
+		TODO - if the race info status property is "finished", run the following:
+		
+		clearInterval(raceInterval) // to stop the interval from repeating
+		renderAt('#race', resultsView(res.positions)) // to render the results view
+		reslove(res) // resolve the promise
+	*/
+					else if (res.status == 'finished') {
+						clearInterval(raceInterval)
+						renderAt('#race', resultsView(res.positions))
+						resolve(res)
 					}
-				}).catch(error => {
-					clearInterval(raceInterval);
-					reject(error);
-				});
+				})
+				.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
 		}, 500);
 	});
 	// remember to add error handling for the Promise
@@ -159,20 +153,16 @@ async function runCountdown() {
 		let timer = 3
 
 		return new Promise(resolve => {
-			document.getElementById('big-numbers').innerHTML = timer;
 			// TODO - use Javascript's built in setInterval method to count down once per second
-			const countdownInterval = setInterval(() => {
-
+			const timerInterval = setInterval(() => {
 				// run this DOM manipulation to decrement the countdown for the user
-				document.getElementById('big-numbers').innerHTML = --timer
-
+				document.getElementById('big-numbers').innerHTML = --timer;
 				// TODO - if the countdown is done, clear the interval, resolve the promise, and return
-				clearInterval(countdownInterval);
-				if (timer === 0) {
-					clearInterval(countdownInterval);
+				if (timer == 0) {
+					clearInterval(timerInterval);
 					resolve('Time Ended');
 				}
-			}, 1000);
+			}, 1000)
 		})
 	} catch (error) {
 		console.log(error);
@@ -181,52 +171,37 @@ async function runCountdown() {
 
 function handleSelectPodRacer(target) {
 	console.log("selected a pod", target.id)
-
 	// remove class selected from all racer options
-	const selected = document.querySelector('#racers .selected')
+	const selected = document.querySelector("#racers .selected");
 	if (selected) {
-		selected.classList.remove('selected')
+		selected.classList.remove("selected");
 	}
 
 	// add class selected to current target
-	target.classList.add('selected')
-
+	target.classList.add("selected");
 	// TODO - save the selected racer to the store
-	if (selected !== undefined) {
-		store.selected_racer = target.id;
-	}
-
+	store.player_id = parseInt(target.id);
 }
 
 function handleSelectTrack(target) {
 	console.log("selected a track", target.id)
-
 	// remove class selected from all track options
-	const selected = document.querySelector('#tracks .selected')
+	const selected = document.querySelector("#tracks .selected");
 	if (selected) {
-		selected.classList.remove('selected')
+		selected.classList.remove("selected");
 	}
-
 	// add class selected to current target
-	target.classList.add('selected')
-
+	target.classList.add("selected");
 	// TODO - save the selected track id to the store
-	if (selected !== undefined) {
-		store.selected_track = target.id;
-	}
+	store.track_id = parseInt(target.id);
 }
 
 function handleAccelerate() {
 	console.log("accelerate button clicked")
 	// TODO - Invoke the API call to accelerate
-	const raceId = store.race_id;
-	if (!raceId) {
-		Swal.fire({ icon: "error", title: "Error", text: "No Race ID" });
-		return;
+	if (store.gameStart == true) {
+		accelerate(store.race_id);
 	}
-	accelerate(raceId)
-		.then(() => console.log(`Race ${raceId} accelerated`))
-		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -249,14 +224,14 @@ function renderRacerCars(racers) {
 }
 
 function renderRacerCard(racer) {
-	const { id, driver_name, top_speed, acceleration, handling } = racer
+	const { id, driver_name, top_speed, acceleration, handling } = racer;
 
 	return `
 		<li class="card podracer" id="${id}">
 			<h3>${driver_name}</h3>
-			<p>${top_speed}</p>
-			<p>${acceleration}</p>
-			<p>${handling}</p>
+			<p>Speed: ${top_speed}</p>
+			<p>Acceleration: ${acceleration}</p>
+			<p>Handling: ${handling}</p>
 		</li>
 	`
 }
@@ -294,10 +269,10 @@ function renderCountdown(count) {
 	`
 }
 
-function renderRaceStartView(track, racers) {
+function renderRaceStartView(track) {
 	return `
 		<header>
-			<h1>Race: ${track}</h1>
+			<h1>Race: ${track.name}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
@@ -325,7 +300,7 @@ function resultsView(positions) {
 		</header>
 		<main>
 			${raceProgress(positions)}
-			<a href="/race">Start a new race</a>
+			<a class="button_re" href="/race">Start a new race</a>
 		</main>
 	`
 }
@@ -413,6 +388,7 @@ function getRacers() {
 		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
+
 function createRace(player_id, track_id) {
 	player_id = parseInt(player_id)
 	track_id = parseInt(track_id)
@@ -424,7 +400,12 @@ function createRace(player_id, track_id) {
 		dataType: 'jsonp',
 		body: JSON.stringify(body)
 	})
-		.then(res => res.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`Error: ${response.status}`);
+			}
+			return response.json();
+		})
 		.catch(err => console.log("Problem with createRace request::", err))
 }
 
@@ -443,28 +424,21 @@ function getRace(id) {
 		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
-function startRace(id) {
-	return fetch(`${SERVER}/api/races/${id}/start`, {
+async function startRace(id) {
+	fetch(`${SERVER}/api/races/${id}/start`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-		.then(res => res.json())
-		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }
 
 function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
-	return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+	fetch(`${SERVER}/api/races/${id}/accelerate`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-		.then(response => {
-			if (!response.ok) {
-				throw new Error(`Error: ${response.status}`);
-			}
-			return response.json();
-		})
-		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }));
+		.catch(err => Swal.fire({ icon: "error", title: "Error", text: err }))
 }

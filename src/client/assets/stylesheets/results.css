@@ -17,3 +17,19 @@
 
 @media (min-width: 1824px) {
 }
+* {
+    text-align: center;
+}
+
+.button_re{
+    font-size: 22px;
+    font-family: tahoma;
+    font-weight: bold;
+    color: white;
+    background: green;
+    padding: 10px;
+    border-radius: 5px;
+    list-style: none;
+    width: 100% !important;
+    margin-bottom: 20px;
+}
