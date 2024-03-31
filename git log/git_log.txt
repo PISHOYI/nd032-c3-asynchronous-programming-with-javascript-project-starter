@@ -1,4 +1,12 @@
-commit 187ea46388d6eb6e379581612a439279a8da6a1e (HEAD -> master, origin/master, origin/HEAD)
+commit be18f2253584ec2cb9d934df4c13149364e8d3b4 (HEAD -> master, origin/master, origin/HEAD)
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Sun Mar 31 20:36:21 2024 +0200
+
+     "Deleted file gitog.txt in git log directory"
+    
+    This commit message describes the code diff above, which shows the deletion of the file 'gitog.txt' in the 'git log' directory. The message is concise and sticks to the facts, without making any assumptions or interpretations about why the file was deleted.
+
+commit 187ea46388d6eb6e379581612a439279a8da6a1e
 Author: pishoy <pishoymoris51@gmail.com>
 Date:   Sun Mar 31 20:32:39 2024 +0200
 
@@ -16,7 +24,7 @@ Author: pishoy <pishoymoris51@gmail.com>
 Date:   Tue Mar 26 17:01:25 2024 +0200
 
      Change API server URL from 'http://localhost:3001' to 'http://localhost:3000'
-    
+
     Update the getTracks() and getRacers() functions to use the fetch API with error handling.
 
 commit 9c55df5ca377109aeba2335a16bacb5ee52ea38c
@@ -38,7 +46,7 @@ Date:   Tue Mar 26 01:20:42 2024 +0200
 
      Update index.js and add sweetalert2 library to all pages
 
-    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions     
+    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions
     * Added sweetalert2 library to all pages for better user notifications and alerts
     * Updated HTML files to include reference to sweetalert2 library and index.js
 
@@ -56,12 +64,13 @@ Date:   Mon Mar 25 22:34:04 2024 +0200
 
      Updated package.json, index.js, and various CSS files for Pod Racer Simulator
 
-    The package.json file was updated to include the "sweetalert2" package. The index.js file was updated to include error handling for crea
-Date:   Tue Mar 26 01:20:42 2024 +0200
+    The package.json file was updated to include the "sweetalert2" package. The index.js file was updated to include error handling for creating and starting races, as well as updating the store with the race ID. Various CSS files were updated to change background images and add styling for the footer.
 
+commit 2fd08f0637e7a3f4bbcd2f4fd07849f999e7dab2
+Merge: 9ad4278 01d6e6f
      Update index.js and add sweetalert2 library to all pages
 
-    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions     
+    * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions
     * Added sweetalert2 library to all pages for better user notifications and alerts
     * Updated HTML files to include reference to sweetalert2 library and index.js
 
