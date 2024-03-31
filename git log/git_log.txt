@@ -1,4 +1,17 @@
-commit be18f2253584ec2cb9d934df4c13149364e8d3b4 (HEAD -> master, origin/master, origin/HEAD)
+commit ca268266bb768c07b4fafc24de78be52c4845ff8 (HEAD -> master, origin/master, origin/HEAD)
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Sun Mar 31 21:25:39 2024 +0200
+
+    Update  images in project
+    Update Track HTML
+
+commit 11954e51286141eb2e45fa8735ab9fcda3bd78a9
+Author: pishoy <pishoymoris51@gmail.com>
+Date:   Sun Mar 31 20:37:19 2024 +0200
+
+    Update "git_log.txt" File
+
+commit be18f2253584ec2cb9d934df4c13149364e8d3b4
 Author: pishoy <pishoymoris51@gmail.com>
 Date:   Sun Mar 31 20:36:21 2024 +0200
 
@@ -49,25 +62,6 @@ Date:   Tue Mar 26 01:20:42 2024 +0200
     * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions
     * Added sweetalert2 library to all pages for better user notifications and alerts
     * Updated HTML files to include reference to sweetalert2 library and index.js
-
-commit d7254f8de0d4149c7ff0c68ed808ceacb83723eb
-Author: pishoy <pishoymoris51@gmail.com>
-Date:   Mon Mar 25 22:35:20 2024 +0200
-
-     Update home.html with footer containing editor's name and copyright
-
-    This commit updates the home.html file by adding a footer that contains the name of the editor and a copyright symbol.
-
-commit 1254eedaa1896b760408e85433f0caa2e3de9dd0
-Author: pishoy <pishoymoris51@gmail.com>
-Date:   Mon Mar 25 22:34:04 2024 +0200
-
-     Updated package.json, index.js, and various CSS files for Pod Racer Simulator
-
-    The package.json file was updated to include the "sweetalert2" package. The index.js file was updated to include error handling for creating and starting races, as well as updating the store with the race ID. Various CSS files were updated to change background images and add styling for the footer.
-
-commit 2fd08f0637e7a3f4bbcd2f4fd07849f999e7dab2
-Merge: 9ad4278 01d6e6f
      Update index.js and add sweetalert2 library to all pages
 
     * Modified index.js to include error handling and additional functionality in handleCreateRace, runRace, and runCountdown functions
